@@ -25,7 +25,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.UUID;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -42,6 +41,10 @@ public class MemberCommand implements YukinoCommand {
                 .setGuildOnly(true)
                 .addSubcommands(
                         new SubcommandData("add", "Add a member")
+                                .addOption(OptionType.USER, "member", "The discord of the member", true)
+                                .addOption(OptionType.STRING, "first_name", "The first name of the member", true)
+                                .addOption(OptionType.STRING, "last_name", "The last name of the member", true),
+                        new SubcommandData("rename", "Rename a member")
                                 .addOption(OptionType.USER, "member", "The discord of the member", true)
                                 .addOption(OptionType.STRING, "first_name", "The first name of the member", true)
                                 .addOption(OptionType.STRING, "last_name", "The last name of the member", true),
@@ -70,6 +73,8 @@ public class MemberCommand implements YukinoCommand {
             event.replyEmbeds(builder.build()).setEphemeral(true).queue();
             return;
         }
+
+        String guildId = guild.getId();
 
         switch (subcommandName) {
             case "add" -> {
@@ -119,17 +124,66 @@ public class MemberCommand implements YukinoCommand {
                                 .setDescription(Lang.MEMBER_SAVED.format(MarkdownSanitizer.escape(member.getFullName())));
                         hook.editOriginalEmbeds(builder.build()).queue();
 
-                        Member targetGMember = guild.getMember(event.getUser());
-                        if (targetGMember == null) {
-                            return;
-                        }
-
-                        guild.modifyNickname(targetGMember, member.getFullName()).queue();
+                        Guild g = event.getJDA().getGuildById(guildId);
+                        if (g == null) return;
+                        Member targetGMember = g.getMember(user);
+                        if (targetGMember == null) return;
+                        g.modifyNickname(targetGMember, member.getFullName()).queue();
                     });
                 }).exceptionally(t -> {
                     throw new RuntimeException(t);
                 }));
 
+            }
+
+            case "rename" -> {
+                OptionMapping memberMapping = event.getOption("member");
+                if (memberMapping == null) {
+                    EmbedBuilder builder = EmbedUtils.getClearEmbed().setDescription(Lang.ERROR.get());
+                    event.replyEmbeds(builder.build()).setEphemeral(true).queue();
+                    return;
+                }
+                User user = memberMapping.getAsUser();
+
+                OptionMapping firstNameMapping = event.getOption("first_name");
+                if (firstNameMapping == null) {
+                    EmbedBuilder builder = EmbedUtils.getClearEmbed().setDescription(Lang.ERROR.get());
+                    event.replyEmbeds(builder.build()).setEphemeral(true).queue();
+                    return;
+                }
+                String firstName = firstNameMapping.getAsString();
+
+                OptionMapping lastNameMapping = event.getOption("last_name");
+                if (lastNameMapping == null) {
+                    EmbedBuilder builder = EmbedUtils.getClearEmbed().setDescription(Lang.ERROR.get());
+                    event.replyEmbeds(builder.build()).setEphemeral(true).queue();
+                    return;
+                }
+                String lastName = lastNameMapping.getAsString();
+
+                event.deferReply().queue(hook -> database.getAOCMemberByDiscordId(user.getId()).thenAccept(
+                        lookup -> lookup.ifPresentOrElse(member -> {
+                            member.setFirstName(firstName);
+                            member.setLastName(lastName);
+                            database.saveAOCMember(member).thenAccept(v -> {
+                                EmbedBuilder builder = EmbedUtils.getClearEmbed()
+                                        .setDescription(Lang.MEMBER_SAVED.format(MarkdownSanitizer.escape(member.getFullName())));
+                                hook.editOriginalEmbeds(builder.build()).queue();
+
+                                Guild g = event.getJDA().getGuildById(guildId);
+                                if (g == null) return;
+                                Member targetGMember = g.getMember(user);
+                                if (targetGMember == null) return;
+                                g.modifyNickname(targetGMember, member.getFullName()).queue();
+                            }).exceptionally(t -> {
+                                throw new RuntimeException(t);
+                            });
+                        }, () -> {
+                            EmbedBuilder builder = EmbedUtils.getClearEmbed().setDescription(Lang.MEMBER_NOT_EXIST.get());
+                            hook.editOriginalEmbeds(builder.build()).queue();
+                        })).exceptionally(t -> {
+                    throw new RuntimeException(t);
+                }));
             }
 
             case "remove" -> {

@@ -2,6 +2,7 @@
 .idea/
 /yukino/
 *.sqlite
+.gradle/
 
 *.iml
 *.ipr

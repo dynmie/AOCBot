@@ -2,7 +2,10 @@
 .idea/
 /yukino/
 *.sqlite
-.gradle/
+.gradle
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+**/build/
 
 *.iml
 *.ipr

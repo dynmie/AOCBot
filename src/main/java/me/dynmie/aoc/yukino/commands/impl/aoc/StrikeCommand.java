@@ -33,7 +33,7 @@ public class StrikeCommand implements YukinoCommand {
 
     @Override
     public @NotNull SlashCommandData getSlashCommandData() {
-        return Commands.slash("strike", "Strike a member")
+        return Commands.slash("strike", "Manage strikes for a member")
                 .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
                 .setGuildOnly(true)
                 .addSubcommands(

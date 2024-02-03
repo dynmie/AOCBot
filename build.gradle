@@ -30,7 +30,7 @@ jar {
 }
 
 dependencies {
-    implementation 'net.dv8tion:JDA:5.0.0-alpha.19'
+    implementation 'net.dv8tion:JDA:5.0.0-alpha.20'
     implementation 'org.slf4j:slf4j-api:2.0.3'
     implementation 'org.slf4j:slf4j-simple:2.0.3'
     implementation 'org.mongodb:mongo-java-driver:3.12.12'

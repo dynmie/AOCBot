@@ -5,6 +5,7 @@ import me.dynmie.aoc.yukino.commands.impl.aoc.ClickCommand;
 import me.dynmie.aoc.yukino.commands.impl.aoc.LookupCommand;
 import me.dynmie.aoc.yukino.commands.impl.aoc.MemberCommand;
 import me.dynmie.aoc.yukino.commands.impl.aoc.StrikeCommand;
+import me.dynmie.aoc.yukino.commands.impl.info.AboutCommand;
 import me.dynmie.aoc.yukino.commands.impl.info.HelpCommand;
 import me.dynmie.aoc.yukino.commands.impl.info.PingCommand;
 import net.dv8tion.jda.api.entities.Guild;
@@ -21,6 +22,7 @@ public class CommandManager {
 
     public static final Map<CommandCategory, YukinoCommand[]> COMMANDS = new HashMap<>() {{
         put(CommandCategory.INFO, new YukinoCommand[]{
+                new AboutCommand(),
                 new HelpCommand(),
                 new PingCommand()
         });

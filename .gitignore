@@ -3,9 +3,8 @@
 /yukino/
 *.sqlite
 .gradle
-!gradle-wrapper.jar
-!gradle-wrapper.properties
 **/build/
+build/
 
 *.iml
 *.ipr
@@ -25,6 +24,8 @@ out/
 
 # Package Files #
 *.jar
+!gradle-wrapper.jar
+!gradle-wrapper.properties
 *.war
 *.nar
 *.ear

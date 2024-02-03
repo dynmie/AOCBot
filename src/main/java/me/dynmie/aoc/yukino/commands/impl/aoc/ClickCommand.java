@@ -1,16 +1,23 @@
 package me.dynmie.aoc.yukino.commands.impl.aoc;
 
+import me.dynmie.aoc.yukino.Yukino;
 import me.dynmie.aoc.yukino.commands.YukinoCommand;
+import me.dynmie.aoc.yukino.database.Database;
 import me.dynmie.aoc.yukino.locale.Lang;
+import me.dynmie.aoc.yukino.utils.BotConfig;
 import me.dynmie.aoc.yukino.utils.Colors;
 import me.dynmie.aoc.yukino.utils.EmbedUtils;
+import me.dynmie.aoc.yukino.utils.GuildUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.unions.GuildChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.hooks.SubscribeEvent;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -23,6 +30,10 @@ import org.jetbrains.annotations.NotNull;
  * @author dynmie
  */
 public class ClickCommand implements YukinoCommand {
+
+    private final Database database = Yukino.getInstance().getDatabaseManager().getDatabase();
+    private final BotConfig config = Yukino.getInstance().getConfig();
+
     @Override
     public @NotNull SlashCommandData getSlashCommandData() {
         return Commands.slash("click", "Set the click channel")
@@ -72,4 +83,27 @@ public class ClickCommand implements YukinoCommand {
                 ));
 
     }
+
+    @SubscribeEvent
+    public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
+        if (!GuildUtils.isActiveGuild(event.getGuild())) {
+            return;
+        }
+
+        if (!event.getComponentId().equals("aoc_apply")) {
+            return;
+        }
+
+        User user = event.getUser();
+
+        event.deferReply(true).queue(h -> database.getAOCMemberByDiscordId(user.getId()).thenAccept(member -> {
+            if (member.isPresent()) {
+                EmbedBuilder builder = EmbedUtils.getClearEmbed().setDescription(Lang.YOU_ALREADY_MEMBER.get());
+                h.editOriginalEmbeds(builder.build()).queue();
+                return;
+            }
+            h.editOriginal("Apply here: " + config.getAOCApplicationLink()).queue();
+        }));
+    }
+
 }

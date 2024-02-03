@@ -8,8 +8,10 @@ import me.dynmie.aoc.yukino.commands.impl.aoc.StrikeCommand;
 import me.dynmie.aoc.yukino.commands.impl.info.HelpCommand;
 import me.dynmie.aoc.yukino.commands.impl.info.PingCommand;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.hooks.SubscribeEvent;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,6 +33,16 @@ public class CommandManager {
         });
     }};
 
+    private void registerCommand(YukinoCommand command) {
+        for (Method method : command.getClass().getMethods()) {
+            if (!method.isAnnotationPresent(SubscribeEvent.class)) {
+                continue;
+            }
+            yukino.getJDA().addEventListener(command);
+            break;
+        }
+    }
+
     public void registerGuild(String guildId) {
         Guild guild = yukino.getJDA().getGuildById(guildId);
         if (guild == null) return;
@@ -39,6 +51,7 @@ public class CommandManager {
 
         for (YukinoCommand[] commands : COMMANDS.values()) {
             for (YukinoCommand command : commands) {
+                registerCommand(command);
                 action = action.addCommands(command.getSlashCommandData());
             }
         }
@@ -49,6 +62,12 @@ public class CommandManager {
     public void unregisterGuild(String guildId) {
         Guild guild = yukino.getJDA().getGuildById(guildId);
         if (guild == null) return;
+
+        for (YukinoCommand[] commands : COMMANDS.values()) {
+            for (YukinoCommand command : commands) {
+                registerCommand(command);
+            }
+        }
 
         guild.updateCommands().queue();
     }

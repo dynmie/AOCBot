@@ -55,6 +55,8 @@ public final class Yukino {
     private CommandManager commandManager;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
 
+    private long startMillis = 0;
+
     private Yukino(Token token, BotConfig config) {
         instance = this;
 
@@ -85,8 +87,13 @@ public final class Yukino {
 
         // WAIT FOR JDA TO CONNECT TO DISCORD
         jda.awaitReady();
+        startMillis = System.currentTimeMillis();
 
         commandManager.registerGuild(config.getGuildId());
+    }
+
+    public long getStartMillis() {
+        return startMillis;
     }
 
     public DatabaseManager getDatabaseManager() {

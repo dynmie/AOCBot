@@ -1,10 +1,7 @@
 package me.dynmie.aoc.yukino.commands;
 
 import me.dynmie.aoc.yukino.Yukino;
-import me.dynmie.aoc.yukino.commands.impl.aoc.ClickCommand;
-import me.dynmie.aoc.yukino.commands.impl.aoc.LookupCommand;
-import me.dynmie.aoc.yukino.commands.impl.aoc.MemberCommand;
-import me.dynmie.aoc.yukino.commands.impl.aoc.StrikeCommand;
+import me.dynmie.aoc.yukino.commands.impl.aoc.*;
 import me.dynmie.aoc.yukino.commands.impl.info.AboutCommand;
 import me.dynmie.aoc.yukino.commands.impl.info.HelpCommand;
 import me.dynmie.aoc.yukino.commands.impl.info.PingCommand;
@@ -31,7 +28,8 @@ public class CommandManager {
                 new LookupCommand(),
                 new MemberCommand(),
                 new ClickCommand(),
-                new StrikeCommand()
+                new StrikeCommand(),
+                new ResetStrikesCommand()
         });
     }};
 

@@ -4,8 +4,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.ReplaceOptions;
+import com.mongodb.client.model.*;
 import me.dynmie.aoc.yukino.Yukino;
 import me.dynmie.aoc.yukino.aoc.AOCMember;
 import me.dynmie.aoc.yukino.database.DBSerializable;
@@ -14,8 +13,7 @@ import me.dynmie.aoc.yukino.utils.BotConfig;
 import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -88,6 +86,27 @@ public class YMongoDatabase implements Database {
         return CompletableFuture.runAsync(() -> aocMembersCollection.deleteOne(
                 Filters.eq("uniqueId", member.getUniqueId().toString())
         ));
+    }
+
+    @Override
+    public @NotNull CompletableFuture<Void> resetStrikes() {
+        return CompletableFuture.runAsync(() -> {
+            Set<AOCMember> members = new HashSet<>();
+            for (Document document : aocMembersCollection.find()) {
+                members.add(DBSerializable.deserialize(document, AOCMember.class));
+            }
+            List<ReplaceOneModel<Document>> documents = new ArrayList<>();
+            for (AOCMember member : members) {
+                member.getStrikes().clear();
+                Document document = new Document(member.serialize());
+                documents.add(new ReplaceOneModel<>(
+                        Filters.eq("uniqueId", member.getUniqueId().toString()),
+                        document,
+                        new ReplaceOptions().upsert(true)
+                ));
+            }
+            aocMembersCollection.bulkWrite(documents);
+        });
     }
 
 }

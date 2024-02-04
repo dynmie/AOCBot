@@ -4,6 +4,7 @@ import me.dynmie.aoc.yukino.aoc.AOCMember;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -31,5 +32,8 @@ public interface Database {
 
     @NotNull
     CompletableFuture<Void> deleteAOCMember(@NotNull AOCMember member);
+
+    @NotNull
+    CompletableFuture<Void> resetStrikes();
 
 }

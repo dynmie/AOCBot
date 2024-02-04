@@ -21,7 +21,11 @@ public enum Lang {
     NO_PERMISSION("NO_PERMISSION", "You do not have permission to execute this command."),
     STRIKE_NOT_EXIST("STRIKE_NOT_EXIST", "That strike doesn't exist."),
     BUTTON_NOT_YOURS("BUTTON_NOT_YOURS", "That button isn't yours!"),
-    STRIKE_CREATED("STRIKE_CREATED", ":warning: **{0}** has been striked with the reason of **{1}**. (#{2})");
+    STRIKE_CREATED("STRIKE_CREATED", ":warning: **{0}** has been striked with the reason of **{1}**. (#{2})"),
+    STRIKES_RESET_CONFIRM("STRIKES_RESET_CONFIRM", "**You are about to delete all strikes stored in the database.**\nAre you sure you would like to continue?"),
+    STRIKES_RESET("STRIKES_RESET", "All strikes has been reset."),
+    MODAL_EXPIRED("MODAL_EXPIRED", "This modal has expired."),
+    INTERACTION_CANCELLED("INTERACTION_CANCELLED", "The interaction has been cancelled.");
 
     private final String path;
     private final String defaultMessage;

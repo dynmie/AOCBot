@@ -7,9 +7,10 @@ import java.awt.*;
  */
 public enum EmbedLevel {
 
-    WARNING(new Color(238, 229, 40)),
+    WARNING(new Color(240, 213, 0)),
     DEFAULT(Colors.DEFAULT),
-    ERROR(new Color(236, 21, 21));
+    ERROR(new Color(208, 23, 23)),
+    DANGER(new Color(210, 39, 28));
 
     private final Color color;
 

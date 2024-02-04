@@ -117,10 +117,18 @@ public class Config extends Properties {
     }
 
     public static void saveProperties(Properties properties, File file) {
+        if (!file.exists()) {
+            file.getParentFile().mkdirs();
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
         try (FileWriter writer = new FileWriter(file)) {
             properties.store(writer, " Configuration");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 

@@ -73,8 +73,8 @@ public class ClickCommand implements YukinoCommand {
 
         EmbedBuilder builder = new EmbedBuilder()
                 .setColor(Colors.DEFAULT)
-                .setTitle("Apply to the Adopt our Campus Club")
-                .setDescription("Click below to start your application.");
+                .setTitle("Want to join the Adopt our Campus Club?")
+                .setDescription("If you are not already a member, then click below to join!");
 
         event.deferReply(true).queue(h -> channel.asGuildMessageChannel().sendMessageEmbeds(builder.build())
                 .addActionRow(Button.primary("aoc_apply", "Apply"))

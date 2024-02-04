@@ -2,8 +2,6 @@ package me.dynmie.aoc.yukino.commands.impl.info;
 
 import me.dynmie.aoc.yukino.Yukino;
 import me.dynmie.aoc.yukino.commands.YukinoCommand;
-import me.dynmie.aoc.yukino.locale.Lang;
-import me.dynmie.aoc.yukino.utils.DateUtils;
 import me.dynmie.aoc.yukino.utils.DurationUtils;
 import me.dynmie.aoc.yukino.utils.EmbedUtils;
 import net.dv8tion.jda.api.EmbedBuilder;

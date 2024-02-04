@@ -4,7 +4,6 @@ import me.dynmie.aoc.yukino.Yukino;
 import me.dynmie.aoc.yukino.commands.YukinoCommand;
 import me.dynmie.aoc.yukino.locale.Lang;
 import me.dynmie.aoc.yukino.utils.DateUtils;
-import me.dynmie.aoc.yukino.utils.EmbedLevel;
 import me.dynmie.aoc.yukino.utils.EmbedUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;

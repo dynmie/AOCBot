@@ -27,6 +27,7 @@ import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -214,13 +215,16 @@ public class MemberCommand implements YukinoCommand {
                                             targetId
                             ), "Remove");
 
-                            hook.editOriginalEmbeds(builder.build()).setActionRow(deleteButton).queue();
+                            Button cancelButton = Button.secondary("aoc_member_delete_cancel:%s:%s:%s".formatted(
+                                    userId,
+                                    expiry,
+                                    targetId
+                            ), "Cancel");
 
-                            Yukino.getInstance().getScheduler().schedule(() ->
-                                    hook.editOriginalComponents(ActionRow.of(deleteButton.asDisabled())).queue(),
-                                    15,
-                                    TimeUnit.SECONDS
-                            );
+                            hook.editOriginalEmbeds(builder.build()).setActionRow(deleteButton, cancelButton)
+                                    .delay(15, TimeUnit.SECONDS)
+                                    .flatMap(h -> h.editMessageComponents(ActionRow.of(deleteButton.asDisabled(), cancelButton.asDisabled())))
+                                    .queue();
                         }, () -> {
                             EmbedBuilder builder = EmbedUtils.getClearEmbed().setDescription(Lang.MEMBER_NOT_EXIST.get());
                             hook.editOriginalEmbeds(builder.build()).queue();
@@ -240,6 +244,7 @@ public class MemberCommand implements YukinoCommand {
 
             String[] split = event.getComponentId().split(":");
 
+            String id = split[0];
             String userId = split[1];
             long expiry = Long.parseLong(split[2]);
             String targetId = split[3];
@@ -267,7 +272,20 @@ public class MemberCommand implements YukinoCommand {
                 return;
             }
 
-            event.getMessage().editMessageComponents(ActionRow.of(event.getButton().asDisabled())).queue();
+            List<Button> buttons = event.getMessage().getButtons().stream().map(Button::asDisabled).toList();
+            event.getMessage().editMessageComponents(ActionRow.of(buttons)).queue();
+
+            if (System.currentTimeMillis() > expiry) {
+                event.replyEmbeds(EmbedUtils.getClearEmbed().setDescription(Lang.MODAL_EXPIRED.get()).build()).queue();
+                return;
+            }
+
+            if (id.equals("aoc_member_delete_cancel")) {
+                event.replyEmbeds(EmbedUtils.getClearEmbed().setDescription(Lang.INTERACTION_CANCELLED.get()).build())
+                        .setEphemeral(true)
+                        .queue();
+                return;
+            }
 
             event.deferReply().queue(hook -> database.getAOCMemberByDiscordId(targetId).thenAccept(
                     lookup -> lookup.ifPresentOrElse(member -> database.deleteAOCMember(member).thenAccept(v -> {

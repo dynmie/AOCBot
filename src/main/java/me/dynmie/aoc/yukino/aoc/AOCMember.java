@@ -17,6 +17,7 @@ public class AOCMember implements DBSerializable {
     private String firstName;
     private String lastName;
     private final List<Strike> strikes;
+    private long hours;
 
     public AOCMember(
             UUID uniqueId,
@@ -24,7 +25,8 @@ public class AOCMember implements DBSerializable {
             long joined,
             String firstName,
             String lastName,
-            List<Strike> strikes
+            List<Strike> strikes,
+            long hours
     ) {
         this.uniqueId = uniqueId;
         this.discordId = discordId;
@@ -32,6 +34,15 @@ public class AOCMember implements DBSerializable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.strikes = strikes;
+        this.hours = hours;
+    }
+
+    public void setHours(long hours) {
+        this.hours = hours;
+    }
+
+    public long getHours() {
+        return hours;
     }
 
     public String getDiscordId() {
@@ -56,6 +67,7 @@ public class AOCMember implements DBSerializable {
         ret.put("firstName", firstName);
         ret.put("lastName", lastName);
         ret.put("strikes", strikes.stream().map(Strike::serialize).toList());
+        ret.put("hours", hours);
 
         return ret;
     }
@@ -75,7 +87,8 @@ public class AOCMember implements DBSerializable {
                 (Long) map.get("joined"),
                 (String) map.get("firstName"),
                 (String) map.get("lastName"),
-                strikes
+                strikes,
+                (long) map.getOrDefault("hours", 0L)
         );
     }
 

@@ -102,6 +102,7 @@ public class ResetStrikesCommand implements YukinoCommand {
 
         if (event.getComponentId().startsWith("aoc_strikes_reset_cancel")) {
             event.replyEmbeds(EmbedUtils.getClearEmbed().setDescription(Lang.INTERACTION_CANCELLED.get()).build())
+                    .setEphemeral(true)
                     .queue();
             return;
         }

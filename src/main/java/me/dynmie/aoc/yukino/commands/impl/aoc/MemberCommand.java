@@ -120,7 +120,8 @@ public class MemberCommand implements YukinoCommand {
                             System.currentTimeMillis(),
                             firstName.trim(),
                             lastName.trim(),
-                            new ArrayList<>()
+                            new ArrayList<>(),
+                            0
                     );
 
                     database.saveAOCMember(member).thenAccept(v -> {

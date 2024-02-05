@@ -2,6 +2,7 @@ package me.dynmie.aoc.yukino.database.impl;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -109,6 +110,37 @@ public class YMongoDatabase implements Database {
             }
             aocMembersCollection.bulkWrite(documents);
         });
+    }
+
+    @Override
+    public @NotNull CompletableFuture<List<AOCMember>> getTopAOCMembersByHours(int page, int limit) {
+        if (page < 1) {
+            throw new IllegalArgumentException("page cannot be lower than 1");
+        }
+
+        return CompletableFuture.supplyAsync(() -> {
+            Document filter = new Document();
+            filter.put("hours", -1);
+            int skip = (page - 1) * limit;
+            if (skip != 0) skip++;
+
+            FindIterable<Document> iterable = aocMembersCollection.find()
+                    .sort(filter)
+                    .skip(skip)
+                    .limit(limit);
+
+            List<AOCMember> members = new ArrayList<>();
+            for (Document document : iterable) {
+                members.add(DBSerializable.deserialize(document, AOCMember.class));
+            }
+
+            return members;
+        });
+    }
+
+    @Override
+    public @NotNull CompletableFuture<Long> getAOCMemberCount() {
+        return CompletableFuture.supplyAsync(() -> aocMembersCollection.countDocuments());
     }
 
 }

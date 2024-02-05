@@ -25,7 +25,8 @@ public enum Lang {
     STRIKES_RESET_CONFIRM("STRIKES_RESET_CONFIRM", "**You are about to delete all strikes stored on the database.**\nAre you sure you would like to continue?"),
     STRIKES_RESET("STRIKES_RESET", "All strikes has been reset."),
     MODAL_EXPIRED("MODAL_EXPIRED", "This modal has expired."),
-    INTERACTION_CANCELLED("INTERACTION_CANCELLED", "The interaction has been cancelled.");
+    INTERACTION_CANCELLED("INTERACTION_CANCELLED", "The interaction has been cancelled."),
+    HOURS_SET("HOURS_SET", "**{0}** now has **{1}** hours.");
 
     private final String path;
     private final String defaultMessage;

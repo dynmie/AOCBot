@@ -43,15 +43,17 @@ public class LookupCommand implements YukinoCommand {
                     optional.ifPresentOrElse(member -> {
                         MessageEmbed embed = EmbedUtils.getDefaultEmbed()
                                 .setTitle("%s".formatted(MarkdownSanitizer.escape(member.getFullName())))
-                                .addField("Strikes", "%s strikes".formatted(member.getStrikes().size()), true)
                                 .addField("Joined", DateUtils.formatMillis(member.getJoined()), true)
+                                .addField("Volunteer Hours", "%s hours".formatted(member.getHours()), true)
+                                .addField("Strikes", "%s strikes".formatted(member.getStrikes().size()), true)
                                 .build();
 
                         hook.editOriginalEmbeds(embed).queue();
-                    }, () ->{
+                    }, () -> {
                         EmbedBuilder builder = EmbedUtils.getClearEmbed().setDescription(Lang.MEMBER_NOT_EXIST.get());
                         hook.editOriginalEmbeds(builder.build()).queue();
-                    }));
+                    })
+            ).exceptionally(t -> { throw new RuntimeException(t); });
         });
     }
 

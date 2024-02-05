@@ -1,6 +1,7 @@
 package me.dynmie.aoc.yukino.commands;
 
 import me.dynmie.aoc.yukino.Yukino;
+import me.dynmie.aoc.yukino.utils.EmbedUtils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.SubscribeEvent;
@@ -28,8 +29,9 @@ public class CommandListener {
                     try {
                         command.executeSlashCommand(event);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        event.replyEmbeds(EmbedUtils.getErrorEmbed().build()).setEphemeral(true).queue();
                         Yukino.LOGGER.severe(String.format("An error occurred while executing '%s'.", event.getInteraction().getName()));
+                        throw new RuntimeException(e);
                     }
                 }
             }

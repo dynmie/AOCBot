@@ -1,6 +1,7 @@
 package me.dynmie.aoc.yukino.utils;
 
 import me.dynmie.aoc.yukino.Yukino;
+import me.dynmie.aoc.yukino.locale.Lang;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 
@@ -31,6 +32,10 @@ public final class EmbedUtils {
 
     public static EmbedBuilder getDefaultEmbed(EmbedLevel level) {
         return getDefaultEmbed().setColor(level.getColor());
+    }
+
+    public static EmbedBuilder getErrorEmbed() {
+        return getDefaultEmbed().setDescription(Lang.ERROR.get());
     }
 
 }

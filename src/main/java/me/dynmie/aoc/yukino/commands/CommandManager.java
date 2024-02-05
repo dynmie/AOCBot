@@ -29,7 +29,9 @@ public class CommandManager {
                 new MemberCommand(),
                 new ClickCommand(),
                 new StrikeCommand(),
-                new ResetStrikesCommand()
+                new ResetStrikesCommand(),
+                new HoursCommand(),
+                new LeaderboardCommand()
         });
     }};
 

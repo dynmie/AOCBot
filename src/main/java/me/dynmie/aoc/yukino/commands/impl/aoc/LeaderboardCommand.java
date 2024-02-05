@@ -25,7 +25,7 @@ import java.util.StringJoiner;
  */
 public class LeaderboardCommand implements YukinoCommand {
 
-    private static final int MEMBERS_PER_PAGE = 1;
+    private static final int MEMBERS_PER_PAGE = 10;
     private final Database database = Yukino.getInstance().getDatabaseManager().getDatabase();
 
     @Override

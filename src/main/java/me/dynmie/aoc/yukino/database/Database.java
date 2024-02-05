@@ -3,6 +3,7 @@ package me.dynmie.aoc.yukino.database;
 import me.dynmie.aoc.yukino.aoc.AOCMember;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -34,5 +35,11 @@ public interface Database {
 
     @NotNull
     CompletableFuture<Void> resetStrikes();
+
+    @NotNull
+    CompletableFuture<List<AOCMember>> getTopAOCMembersByHours(int page, int limit);
+
+    @NotNull
+    CompletableFuture<Long> getAOCMemberCount();
 
 }

@@ -30,7 +30,8 @@ public class CommandManager {
                 new ClickCommand(),
                 new StrikeCommand(),
                 new ResetStrikesCommand(),
-                new HoursCommand()
+                new HoursCommand(),
+                new LeaderboardCommand()
         });
     }};
 

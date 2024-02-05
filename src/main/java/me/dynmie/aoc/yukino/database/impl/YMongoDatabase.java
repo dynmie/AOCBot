@@ -122,6 +122,7 @@ public class YMongoDatabase implements Database {
             Document filter = new Document();
             filter.put("hours", -1);
             int skip = (page - 1) * limit;
+            if (skip != 0) skip++;
 
             FindIterable<Document> iterable = aocMembersCollection.find()
                     .sort(filter)

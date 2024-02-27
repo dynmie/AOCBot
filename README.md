@@ -2,7 +2,6 @@
 
 ### Notable features
 - Member management system
-- Volunteer hours tracking system
+- Volunteer hours tracking system for members
 - Competitive volunteer hours leaderboard system
 - Member striking system
-- First join information panel

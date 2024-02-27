@@ -29,7 +29,7 @@ public class AboutCommand implements YukinoCommand {
                 .addField(":calendar: Uptime", DurationUtils.formatLong(System.currentTimeMillis() - Yukino.getInstance().getStartMillis()) + " mins", true)
                 .addField(":globe_with_meridians: Language", "Java", true)
                 .addField(":film_frames: Memory Usage", ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024) / 1024 + "MB", true)
-                .addField(":coffee: Codebase", "Yukino", true);
+                .addField(":coffee: Repository", "https://github.com/dynmie/AOCBot/", true);
 
         event.replyEmbeds(builder.build()).setEphemeral(false).queue();
     }

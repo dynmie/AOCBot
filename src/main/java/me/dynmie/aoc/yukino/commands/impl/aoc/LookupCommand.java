@@ -1,10 +1,11 @@
 package me.dynmie.aoc.yukino.commands.impl.aoc;
 
-import me.dynmie.aoc.yukino.Yukino;
 import me.dynmie.aoc.yukino.commands.YukinoCommand;
+import me.dynmie.aoc.yukino.database.Database;
 import me.dynmie.aoc.yukino.locale.Lang;
 import me.dynmie.aoc.yukino.utils.DateUtils;
 import me.dynmie.aoc.yukino.utils.EmbedUtils;
+import me.dynmie.jeorge.Inject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
@@ -20,6 +21,13 @@ import org.jetbrains.annotations.NotNull;
  * @author dynmie
  */
 public class LookupCommand implements YukinoCommand {
+
+    private final Database database;
+
+    @Inject
+    public LookupCommand(Database database) {
+        this.database = database;
+    }
 
     @Override
     public @NotNull SlashCommandData getSlashCommandData() {
@@ -39,9 +47,9 @@ public class LookupCommand implements YukinoCommand {
 
         event.deferReply().queue(hook -> {
             User user = mapping.getAsUser();
-            Yukino.getInstance().getDatabaseManager().getDatabase().getAOCMemberByDiscordId(user.getId()).thenAccept(optional ->
+            database.getAOCMemberByDiscordId(user.getId()).thenAccept(optional ->
                     optional.ifPresentOrElse(member -> {
-                        MessageEmbed embed = EmbedUtils.getDefaultEmbed()
+                        MessageEmbed embed = EmbedUtils.getDefaultEmbed(event.getJDA())
                                 .setTitle("%s".formatted(MarkdownSanitizer.escape(member.getFullName())))
                                 .addField("Joined", DateUtils.formatMillis(member.getJoined()), true)
                                 .addField("Volunteer Hours", "%s hours".formatted(member.getHours()), true)

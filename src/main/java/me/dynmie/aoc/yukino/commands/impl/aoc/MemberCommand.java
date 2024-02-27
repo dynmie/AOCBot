@@ -1,12 +1,13 @@
 package me.dynmie.aoc.yukino.commands.impl.aoc;
 
-import me.dynmie.aoc.yukino.Yukino;
 import me.dynmie.aoc.yukino.aoc.AOCMember;
 import me.dynmie.aoc.yukino.commands.YukinoCommand;
 import me.dynmie.aoc.yukino.database.Database;
 import me.dynmie.aoc.yukino.locale.Lang;
+import me.dynmie.aoc.yukino.utils.BotConfig;
 import me.dynmie.aoc.yukino.utils.EmbedUtils;
 import me.dynmie.aoc.yukino.utils.GuildUtils;
+import me.dynmie.jeorge.Inject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -36,7 +37,14 @@ import java.util.concurrent.TimeUnit;
  */
 public class MemberCommand implements YukinoCommand {
 
-    private final Database database = Yukino.getInstance().getDatabaseManager().getDatabase();
+    private final Database database;
+    private final BotConfig config;
+
+    @Inject
+    public MemberCommand(Database database, BotConfig config) {
+        this.database = database;
+        this.config = config;
+    }
 
     @Override
     public @NotNull SlashCommandData getSlashCommandData() {
@@ -237,7 +245,7 @@ public class MemberCommand implements YukinoCommand {
 
     @SubscribeEvent
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
-        if (!GuildUtils.isActiveGuild(event.getGuild())) {
+        if (!GuildUtils.isActiveGuild(config.getGuildId(), event.getGuild())) {
             return;
         }
 

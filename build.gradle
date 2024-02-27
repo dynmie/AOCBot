@@ -15,6 +15,11 @@ repositories {
             'https://repo.hypixel.net/repository/Hypixel/'
         }
     }
+
+    maven {
+        name 'jitpack.io'
+        url 'https://jitpack.io'
+    }
 }
 
 jar {
@@ -35,6 +40,7 @@ dependencies {
     implementation 'org.slf4j:slf4j-simple:2.0.3'
     implementation 'org.mongodb:mongo-java-driver:3.12.12'
     implementation 'com.zaxxer:HikariCP:5.0.1'
+    implementation 'com.github.dynmie:jeorge:1.1.0'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'

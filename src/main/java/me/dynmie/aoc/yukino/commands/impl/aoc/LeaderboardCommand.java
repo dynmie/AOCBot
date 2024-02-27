@@ -1,11 +1,12 @@
 package me.dynmie.aoc.yukino.commands.impl.aoc;
 
-import me.dynmie.aoc.yukino.Yukino;
 import me.dynmie.aoc.yukino.aoc.AOCMember;
 import me.dynmie.aoc.yukino.commands.YukinoCommand;
 import me.dynmie.aoc.yukino.database.Database;
 import me.dynmie.aoc.yukino.utils.EmbedUtils;
+import me.dynmie.jeorge.Inject;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -26,7 +27,15 @@ import java.util.StringJoiner;
 public class LeaderboardCommand implements YukinoCommand {
 
     private static final int MEMBERS_PER_PAGE = 10;
-    private final Database database = Yukino.getInstance().getDatabaseManager().getDatabase();
+
+    private final Database database;
+    private final JDA jda;
+
+    @Inject
+    public LeaderboardCommand(Database database, JDA jda) {
+        this.database = database;
+        this.jda = jda;
+    }
 
     @Override
     public @NotNull SlashCommandData getSlashCommandData() {
@@ -135,7 +144,7 @@ public class LeaderboardCommand implements YukinoCommand {
         return ActionRow.of(previousButton, firstPageButton, refreshButton, nextButton);
     }
 
-    private static MessageEmbed generateEmbed(int page, List<AOCMember> members, String highlightId) {
+    private MessageEmbed generateEmbed(int page, List<AOCMember> members, String highlightId) {
         StringJoiner joiner = new StringJoiner("\n");
         for (int i = 0; i < members.size(); i++) {
             int rank = ((page - 1) * MEMBERS_PER_PAGE) + i + 1;
@@ -168,7 +177,7 @@ public class LeaderboardCommand implements YukinoCommand {
             joiner.add(ret);
         }
 
-        EmbedBuilder builder = EmbedUtils.getDefaultEmbed()
+        EmbedBuilder builder = EmbedUtils.getDefaultEmbed(jda)
                 .setTitle(":trophy:  Leaderboard")
                 .setDescription(joiner.toString());
 

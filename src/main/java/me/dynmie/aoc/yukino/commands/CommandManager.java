@@ -5,53 +5,78 @@ import me.dynmie.aoc.yukino.commands.impl.aoc.*;
 import me.dynmie.aoc.yukino.commands.impl.info.AboutCommand;
 import me.dynmie.aoc.yukino.commands.impl.info.HelpCommand;
 import me.dynmie.aoc.yukino.commands.impl.info.PingCommand;
+import me.dynmie.jeorge.Injector;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.hooks.SubscribeEvent;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CommandManager {
 
-    private final Yukino yukino = Yukino.getInstance();
+    private final Injector injector;
+    private final JDA jda;
 
-    public static final Map<CommandCategory, YukinoCommand[]> COMMANDS = new HashMap<>() {{
-        put(CommandCategory.INFO, new YukinoCommand[]{
-                new AboutCommand(),
-                new HelpCommand(),
-                new PingCommand()
-        });
 
-        put(CommandCategory.AOC, new YukinoCommand[]{
-                new LookupCommand(),
-                new MemberCommand(),
-                new ClickCommand(),
-                new StrikeCommand(),
-                new ResetStrikesCommand(),
-                new HoursCommand(),
-                new LeaderboardCommand()
-        });
-    }};
+    private final Map<CommandCategory, List<YukinoCommand>> commands = new HashMap<>();
+
+    public CommandManager(Injector injector, JDA jda) {
+        this.injector = injector;
+        this.jda = jda;
+
+        addCommands();
+    }
+
+    private void addCommands() {
+        commands.clear();
+        Map<CommandCategory, List<Class<? extends YukinoCommand>>> toAdd = new HashMap<>() {{
+            put(CommandCategory.INFO, List.of(
+                    AboutCommand.class,
+                    HelpCommand.class,
+                    PingCommand.class
+            ));
+
+            put(CommandCategory.AOC, List.of(
+                    LookupCommand.class,
+                    MemberCommand.class,
+                    ClickCommand.class,
+                    StrikeCommand.class,
+                    ResetStrikesCommand.class,
+                    HoursCommand.class,
+                    LeaderboardCommand.class
+            ));
+        }};
+
+        for (CommandCategory category : toAdd.keySet()) {
+            for (Class<? extends YukinoCommand> clazz : toAdd.get(category)) {
+                List<YukinoCommand> list = commands.computeIfAbsent(category, commandCategory -> new ArrayList<>());
+                list.add(injector.createInstance(clazz));
+            }
+        }
+    }
 
     private void registerCommand(YukinoCommand command) {
         for (Method method : command.getClass().getMethods()) {
             if (!method.isAnnotationPresent(SubscribeEvent.class)) {
                 continue;
             }
-            yukino.getJDA().addEventListener(command);
+            jda.addEventListener(command);
             break;
         }
     }
 
     public void registerGuild(String guildId) {
-        Guild guild = yukino.getJDA().getGuildById(guildId);
+        Guild guild = jda.getGuildById(guildId);
         if (guild == null) return;
 
         CommandListUpdateAction action = guild.updateCommands();
 
-        for (YukinoCommand[] commands : COMMANDS.values()) {
+        for (List<YukinoCommand> commands : commands.values()) {
             for (YukinoCommand command : commands) {
                 registerCommand(command);
                 action = action.addCommands(command.getSlashCommandData());
@@ -62,10 +87,10 @@ public class CommandManager {
     }
 
     public void unregisterGuild(String guildId) {
-        Guild guild = yukino.getJDA().getGuildById(guildId);
+        Guild guild = jda.getGuildById(guildId);
         if (guild == null) return;
 
-        for (YukinoCommand[] commands : COMMANDS.values()) {
+        for (List<YukinoCommand> commands : commands.values()) {
             for (YukinoCommand command : commands) {
                 registerCommand(command);
             }
@@ -74,4 +99,7 @@ public class CommandManager {
         guild.updateCommands().queue();
     }
 
+    public Map<CommandCategory, List<YukinoCommand>> getCommands() {
+        return commands;
+    }
 }

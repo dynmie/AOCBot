@@ -2,11 +2,14 @@ package me.dynmie.aoc.yukino;
 
 import me.dynmie.aoc.yukino.commands.CommandManager;
 import me.dynmie.aoc.yukino.database.DatabaseManager;
+import me.dynmie.aoc.yukino.dependency.YukinoBinder;
 import me.dynmie.aoc.yukino.listeners.ListenerManager;
 import me.dynmie.aoc.yukino.locale.Lang;
 import me.dynmie.aoc.yukino.utils.BotConfig;
 import me.dynmie.aoc.yukino.utils.Config;
 import me.dynmie.aoc.yukino.utils.Token;
+import me.dynmie.jeorge.Injector;
+import me.dynmie.jeorge.Jeorge;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -17,16 +20,12 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import java.io.File;
 import java.util.Date;
 import java.util.EnumSet;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 public final class Yukino {
-
-    public static Yukino instance;
     public static final Logger LOGGER = Logger.getLogger(Yukino.class.getName());
 
     static {
@@ -47,19 +46,16 @@ public final class Yukino {
     private final Token token;
     private final BotConfig config;
 
-    private JDA jda;
+    private Injector injector;
 
     private DatabaseManager databaseManager;
 
     private ListenerManager listenerManager;
     private CommandManager commandManager;
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
 
     private long startMillis = 0;
 
     private Yukino(Token token, BotConfig config) {
-        instance = this;
-
         this.token = token;
         this.config = config;
     }
@@ -70,30 +66,28 @@ public final class Yukino {
         Lang.init();
 
         // LOAD JDA
-        jda = JDABuilder.create(token.token(), EnumSet.allOf(GatewayIntent.class))
+        JDA jda = JDABuilder.create(token.token(), EnumSet.allOf(GatewayIntent.class))
                 .setEventManager(new AnnotatedEventManager())
                 .setActivity(Activity.listening(config.getStatus()))
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .build();
 
         // LOAD MANAGERS
-        this.databaseManager = new DatabaseManager();
+        this.databaseManager = new DatabaseManager(config);
         databaseManager.init();
 
-        this.listenerManager = new ListenerManager();
-        listenerManager.register();
+        injector = Jeorge.createInjector(new YukinoBinder(this, jda, config, databaseManager));
 
-        this.commandManager = new CommandManager();
+        this.commandManager = new CommandManager(injector, jda);
+
+        this.listenerManager = new ListenerManager(injector, jda);
+        listenerManager.register();
 
         // WAIT FOR JDA TO CONNECT TO DISCORD
         jda.awaitReady();
         startMillis = System.currentTimeMillis();
 
         commandManager.registerGuild(config.getGuildId());
-    }
-
-    public long getStartMillis() {
-        return startMillis;
     }
 
     public DatabaseManager getDatabaseManager() {
@@ -108,21 +102,16 @@ public final class Yukino {
         return commandManager;
     }
 
-    public JDA getJDA() {
-        return jda;
+    public Injector getInjector() {
+        return injector;
     }
 
-    public BotConfig getConfig() {
-        return config;
+    public long getStartMillis() {
+        return startMillis;
     }
 
     public static File getFolderPath() {
         return new File("yukino");
-    }
-
-    public static Yukino getInstance() {
-        if (instance == null) throw new NullPointerException();
-        return instance;
     }
 
     public static void main(String[] args) {
@@ -148,11 +137,6 @@ public final class Yukino {
             token = new Token(conf.getProperty("TOKEN", ""));
         }
 
-        if (Yukino.instance != null) {
-            LOGGER.severe("There is already an instance of Yukino.");
-            System.exit(-1);
-        }
-
         Yukino yukino = new Yukino(token, botConfig);
 
         try {
@@ -162,9 +146,5 @@ public final class Yukino {
             LOGGER.severe("Failed to load.");
             System.exit(-1);
         }
-    }
-
-    public ScheduledExecutorService getScheduler() {
-        return scheduler;
     }
 }

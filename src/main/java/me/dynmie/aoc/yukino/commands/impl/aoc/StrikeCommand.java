@@ -1,12 +1,12 @@
 package me.dynmie.aoc.yukino.commands.impl.aoc;
 
-import me.dynmie.aoc.yukino.Yukino;
 import me.dynmie.aoc.yukino.aoc.strikes.Strike;
 import me.dynmie.aoc.yukino.commands.YukinoCommand;
 import me.dynmie.aoc.yukino.database.Database;
 import me.dynmie.aoc.yukino.locale.Lang;
 import me.dynmie.aoc.yukino.utils.DateUtils;
 import me.dynmie.aoc.yukino.utils.EmbedUtils;
+import me.dynmie.jeorge.Inject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -29,7 +29,12 @@ import java.util.StringJoiner;
  */
 public class StrikeCommand implements YukinoCommand {
 
-    private final Database database = Yukino.getInstance().getDatabaseManager().getDatabase();
+    private final Database database;
+
+    @Inject
+    public StrikeCommand(Database database) {
+        this.database = database;
+    }
 
     @Override
     public @NotNull SlashCommandData getSlashCommandData() {
@@ -146,7 +151,7 @@ public class StrikeCommand implements YukinoCommand {
             case "list" ->
                     event.deferReply().queue(h -> database.getAOCMemberByDiscordId(user.getId()).thenAccept(optional -> optional.ifPresentOrElse(
                             member -> {
-                                EmbedBuilder builder = EmbedUtils.getDefaultEmbed()
+                                EmbedBuilder builder = EmbedUtils.getDefaultEmbed(event.getJDA())
                                         .setTitle("%s's Strikes (%s)".formatted(
                                                 MarkdownSanitizer.escape(member.getFullName()),
                                                 member.getStrikes().size()

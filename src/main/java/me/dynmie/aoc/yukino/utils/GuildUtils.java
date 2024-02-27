@@ -1,7 +1,7 @@
 package me.dynmie.aoc.yukino.utils;
 
-import me.dynmie.aoc.yukino.Yukino;
 import net.dv8tion.jda.api.entities.Guild;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -9,10 +9,10 @@ import org.jetbrains.annotations.Nullable;
  */
 public class GuildUtils {
 
-    public static boolean isActiveGuild(@Nullable Guild guild) {
+    public static boolean isActiveGuild(@NotNull String guildId, @Nullable Guild guild) {
         if (guild == null) return false;
 
-        return Yukino.getInstance().getConfig().getGuildId().equals(guild.getId());
+        return guildId.equals(guild.getId());
     }
 
 }

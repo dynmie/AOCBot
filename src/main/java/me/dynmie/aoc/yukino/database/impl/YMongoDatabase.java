@@ -8,7 +8,6 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOneModel;
 import com.mongodb.client.model.ReplaceOptions;
-import me.dynmie.aoc.yukino.Yukino;
 import me.dynmie.aoc.yukino.aoc.AOCMember;
 import me.dynmie.aoc.yukino.database.DBSerializable;
 import me.dynmie.aoc.yukino.database.Database;
@@ -26,7 +25,11 @@ import java.util.logging.Logger;
  */
 public class YMongoDatabase implements Database {
 
-    private final BotConfig config = Yukino.getInstance().getConfig();
+    private final BotConfig config;
+
+    public YMongoDatabase(BotConfig config) {
+        this.config = config;
+    }
 
     private MongoClient client;
 

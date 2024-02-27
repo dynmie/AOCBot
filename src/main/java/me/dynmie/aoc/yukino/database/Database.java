@@ -1,6 +1,8 @@
 package me.dynmie.aoc.yukino.database;
 
 import me.dynmie.aoc.yukino.aoc.AOCMember;
+import me.dynmie.aoc.yukino.database.impl.YMongoDatabase;
+import me.dynmie.aoc.yukino.utils.BotConfig;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -41,5 +43,15 @@ public interface Database {
 
     @NotNull
     CompletableFuture<Long> getAOCMemberCount();
+
+    static Database of(String type, BotConfig config) {
+        if (type == null) return null;
+
+        if ("mongo".equalsIgnoreCase(type)) {
+            return new YMongoDatabase(config);
+        }
+
+        return null;
+    }
 
 }

@@ -1,6 +1,5 @@
 package me.dynmie.aoc.yukino.utils;
 
-import me.dynmie.aoc.yukino.Yukino;
 import me.dynmie.aoc.yukino.locale.Lang;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -9,12 +8,9 @@ import java.time.Instant;
 
 public final class EmbedUtils {
 
-    private static final Yukino yukino = Yukino.getInstance();
-    private static final JDA jda = yukino.getJDA();
-
     private EmbedUtils() {}
 
-    public static EmbedBuilder getDefaultEmbed() {
+    public static EmbedBuilder getDefaultEmbed(JDA jda) {
         return new EmbedBuilder()
                 .setColor(Colors.DEFAULT)
                 .setFooter(jda.getSelfUser().getName(), jda.getSelfUser().getAvatarUrl())
@@ -30,12 +26,12 @@ public final class EmbedUtils {
         return getClearEmbed().setColor(level.getColor());
     }
 
-    public static EmbedBuilder getDefaultEmbed(EmbedLevel level) {
-        return getDefaultEmbed().setColor(level.getColor());
+    public static EmbedBuilder getDefaultEmbed(JDA jda, EmbedLevel level) {
+        return getDefaultEmbed(jda).setColor(level.getColor());
     }
 
-    public static EmbedBuilder getErrorEmbed() {
-        return getDefaultEmbed().setDescription(Lang.ERROR.get());
+    public static EmbedBuilder getErrorEmbed(JDA jda) {
+        return getDefaultEmbed(jda).setDescription(Lang.ERROR.get());
     }
 
 }

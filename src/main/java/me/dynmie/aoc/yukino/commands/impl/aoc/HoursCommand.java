@@ -1,10 +1,10 @@
 package me.dynmie.aoc.yukino.commands.impl.aoc;
 
-import me.dynmie.aoc.yukino.Yukino;
 import me.dynmie.aoc.yukino.commands.YukinoCommand;
 import me.dynmie.aoc.yukino.database.Database;
 import me.dynmie.aoc.yukino.locale.Lang;
 import me.dynmie.aoc.yukino.utils.EmbedUtils;
+import me.dynmie.jeorge.Inject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.User;
@@ -24,7 +24,12 @@ import java.util.Optional;
  */
 public class HoursCommand implements YukinoCommand {
 
-    private final Database database = Yukino.getInstance().getDatabaseManager().getDatabase();
+    private final Database database;
+
+    @Inject
+    public HoursCommand(Database database) {
+        this.database = database;
+    }
 
     @Override
     public @NotNull SlashCommandData getSlashCommandData() {
@@ -48,7 +53,7 @@ public class HoursCommand implements YukinoCommand {
     public void executeSlashCommand(@NotNull SlashCommandInteractionEvent event) {
         String subcommandName = event.getSubcommandName();
         if (subcommandName == null) {
-            event.replyEmbeds(EmbedUtils.getErrorEmbed().build()).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.getErrorEmbed(event.getJDA()).build()).setEphemeral(true).queue();
             return;
         }
 

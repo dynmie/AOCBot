@@ -12,7 +12,6 @@
 - Member caching with Redis
 
 # Getting started
-## Running the bot
 ### Prerequisites
 - [Java 17 JRE](https://adoptium.net/temurin/releases/?version=17)
 - [MongoDB](https://www.mongodb.com/try/download/community)

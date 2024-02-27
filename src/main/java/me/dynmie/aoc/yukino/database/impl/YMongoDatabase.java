@@ -121,6 +121,9 @@ public class YMongoDatabase implements Database {
         return CompletableFuture.supplyAsync(() -> {
             Document filter = new Document();
             filter.put("hours", -1);
+            filter.put("firstName", 1);
+            filter.put("lastName", 1);
+
             int skip = (page - 1) * limit;
             if (skip != 0) skip++;
 

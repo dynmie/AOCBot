@@ -30,7 +30,8 @@ public class LeaderboardCommand implements YukinoCommand {
 
     @Override
     public @NotNull SlashCommandData getSlashCommandData() {
-        return Commands.slash("leaderboard", "Show the top members");
+        return Commands.slash("leaderboard", "Show the top members")
+                .setGuildOnly(true);
     }
 
     @Override

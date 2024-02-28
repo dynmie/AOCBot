@@ -49,7 +49,7 @@ public class LookupCommand implements YukinoCommand {
             User user = mapping.getAsUser();
             database.getAOCMemberByDiscordId(user.getId()).thenAccept(optional ->
                     optional.ifPresentOrElse(member -> {
-                        MessageEmbed embed = EmbedUtils.getDefaultEmbed(event.getJDA())
+                        MessageEmbed embed = EmbedUtils.getDefaultEmbed()
                                 .setTitle("%s".formatted(MarkdownSanitizer.escape(member.getFullName())))
                                 .addField("Joined", DateUtils.formatMillis(member.getJoined()), true)
                                 .addField("Volunteer Hours", "%s hours".formatted(member.getHours()), true)

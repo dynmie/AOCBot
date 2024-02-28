@@ -7,6 +7,7 @@ import me.dynmie.aoc.yukino.listeners.ListenerManager;
 import me.dynmie.aoc.yukino.locale.Lang;
 import me.dynmie.aoc.yukino.utils.BotConfig;
 import me.dynmie.aoc.yukino.utils.Config;
+import me.dynmie.aoc.yukino.utils.EmbedUtils;
 import me.dynmie.aoc.yukino.utils.Token;
 import me.dynmie.jeorge.Injector;
 import me.dynmie.jeorge.Jeorge;
@@ -77,6 +78,8 @@ public final class Yukino {
         databaseManager.init();
 
         injector = Jeorge.createInjector(new YukinoBinder(this, jda, config, databaseManager));
+
+        injector.injectStaticMembers(EmbedUtils.class);
 
         this.commandManager = new CommandManager(injector, jda);
 

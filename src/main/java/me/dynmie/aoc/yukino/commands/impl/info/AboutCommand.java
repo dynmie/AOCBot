@@ -26,7 +26,7 @@ public class AboutCommand implements YukinoCommand {
 
     @Override
     public void executeSlashCommand(@NotNull SlashCommandInteractionEvent event) {
-        EmbedBuilder builder = EmbedUtils.getDefaultEmbed(event.getJDA())
+        EmbedBuilder builder = EmbedUtils.getDefaultEmbed()
                 .setTitle("About " + event.getJDA().getSelfUser().getName())
                 .setDescription("This is the official discord bot for the Adopt our Campus Club!")
                 .addField(":computer: Developer", "dynmie", true)

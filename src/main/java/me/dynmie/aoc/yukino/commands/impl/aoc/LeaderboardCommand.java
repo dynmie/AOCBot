@@ -6,7 +6,6 @@ import me.dynmie.aoc.yukino.database.Database;
 import me.dynmie.aoc.yukino.utils.EmbedUtils;
 import me.dynmie.jeorge.Inject;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -29,12 +28,10 @@ public class LeaderboardCommand implements YukinoCommand {
     private static final int MEMBERS_PER_PAGE = 10;
 
     private final Database database;
-    private final JDA jda;
 
     @Inject
-    public LeaderboardCommand(Database database, JDA jda) {
+    public LeaderboardCommand(Database database) {
         this.database = database;
-        this.jda = jda;
     }
 
     @Override
@@ -177,7 +174,7 @@ public class LeaderboardCommand implements YukinoCommand {
             joiner.add(ret);
         }
 
-        EmbedBuilder builder = EmbedUtils.getDefaultEmbed(jda)
+        EmbedBuilder builder = EmbedUtils.getDefaultEmbed()
                 .setTitle(":trophy:  Leaderboard")
                 .setDescription(joiner.toString());
 

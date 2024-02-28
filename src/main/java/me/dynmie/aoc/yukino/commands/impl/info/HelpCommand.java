@@ -33,7 +33,7 @@ public class HelpCommand implements YukinoCommand {
     @Override
     public void executeSlashCommand(@NotNull SlashCommandInteractionEvent event) {
 
-        EmbedBuilder builder = EmbedUtils.getDefaultEmbed(event.getJDA())
+        EmbedBuilder builder = EmbedUtils.getDefaultEmbed()
                 .setTitle("Help");
 
         for (Map.Entry<CommandCategory, List<YukinoCommand>> entry : commandManager.getCommands().entrySet()) {

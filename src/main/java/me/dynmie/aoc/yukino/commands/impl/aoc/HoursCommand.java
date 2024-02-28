@@ -53,7 +53,7 @@ public class HoursCommand implements YukinoCommand {
     public void executeSlashCommand(@NotNull SlashCommandInteractionEvent event) {
         String subcommandName = event.getSubcommandName();
         if (subcommandName == null) {
-            event.replyEmbeds(EmbedUtils.getErrorEmbed(event.getJDA()).build()).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.getErrorEmbed().build()).setEphemeral(true).queue();
             return;
         }
 

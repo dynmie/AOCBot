@@ -41,7 +41,7 @@ public class CommandListener {
                     try {
                         command.executeSlashCommand(event);
                     } catch (Exception e) {
-                        event.replyEmbeds(EmbedUtils.getErrorEmbed(event.getJDA()).build()).setEphemeral(true).queue();
+                        event.replyEmbeds(EmbedUtils.getErrorEmbed().build()).setEphemeral(true).queue();
                         Yukino.LOGGER.severe(String.format("An error occurred while executing '%s'.", event.getInteraction().getName()));
                         throw new RuntimeException(e);
                     }

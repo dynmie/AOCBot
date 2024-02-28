@@ -151,7 +151,7 @@ public class StrikeCommand implements YukinoCommand {
             case "list" ->
                     event.deferReply().queue(h -> database.getAOCMemberByDiscordId(user.getId()).thenAccept(optional -> optional.ifPresentOrElse(
                             member -> {
-                                EmbedBuilder builder = EmbedUtils.getDefaultEmbed(event.getJDA())
+                                EmbedBuilder builder = EmbedUtils.getDefaultEmbed()
                                         .setTitle("%s's Strikes (%s)".formatted(
                                                 MarkdownSanitizer.escape(member.getFullName()),
                                                 member.getStrikes().size()

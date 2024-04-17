@@ -41,6 +41,7 @@ dependencies {
     implementation 'org.mongodb:mongo-java-driver:3.12.12'
     implementation 'com.zaxxer:HikariCP:5.0.1'
     implementation 'com.github.dynmie:jeorge:1.2.0'
+    implementation 'org.jetbrains:annotations:24.0.0'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'

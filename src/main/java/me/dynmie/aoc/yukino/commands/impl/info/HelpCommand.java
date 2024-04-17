@@ -2,7 +2,6 @@ package me.dynmie.aoc.yukino.commands.impl.info;
 
 import me.dynmie.aoc.yukino.Yukino;
 import me.dynmie.aoc.yukino.commands.CommandCategory;
-import me.dynmie.aoc.yukino.commands.CommandManager;
 import me.dynmie.aoc.yukino.commands.YukinoCommand;
 import me.dynmie.aoc.yukino.utils.EmbedUtils;
 import me.dynmie.jeorge.Inject;
@@ -18,11 +17,11 @@ import java.util.StringJoiner;
 
 public class HelpCommand implements YukinoCommand {
 
-    private final CommandManager commandManager;
+    private final Yukino yukino;
 
     @Inject
     public HelpCommand(Yukino yukino) {
-        this.commandManager = yukino.getCommandManager();
+        this.yukino = yukino;
     }
 
     @Override
@@ -36,7 +35,9 @@ public class HelpCommand implements YukinoCommand {
         EmbedBuilder builder = EmbedUtils.getDefaultEmbed()
                 .setTitle("Help");
 
-        for (Map.Entry<CommandCategory, List<YukinoCommand>> entry : commandManager.getCommands().entrySet()) {
+        Map<CommandCategory, List<YukinoCommand>> commandCategoryMap = yukino.getCommandManager().getCommands();
+
+        for (Map.Entry<CommandCategory, List<YukinoCommand>> entry : commandCategoryMap.entrySet()) {
             CommandCategory category = entry.getKey();
             List<YukinoCommand> commands = entry.getValue();
 

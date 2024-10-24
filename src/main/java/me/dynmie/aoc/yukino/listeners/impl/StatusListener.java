@@ -1,7 +1,7 @@
 package me.dynmie.aoc.yukino.listeners.impl;
 
 import me.dynmie.aoc.yukino.Yukino;
-import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 
